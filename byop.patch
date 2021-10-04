@@ -1,0 +1,94 @@
+diff --git a/Makefile b/Makefile
+index d43892e..97e94d8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -8,15 +8,11 @@ PATH     := $(DEST)/bin:$(PATH)
+ NR_CORES := $(shell nproc)
+ 
+ # default configure flags
+-fesvr-co              = --prefix=$(RISCV) --target=riscv64-unknown-linux-gnu
+-isa-sim-co            = --prefix=$(RISCV) --with-fesvr=$(DEST)
+ gnu-toolchain-co-fast = --prefix=$(RISCV) --disable-gdb# no multilib for fast
+ pk-co                 = --prefix=$(RISCV) --host=riscv64-unknown-linux-gnu CC=riscv64-unknown-linux-gnu-gcc OBJDUMP=riscv64-unknown-linux-gnu-objdump
+ tests-co              = --prefix=$(RISCV)/target
+ 
+ # default make flags
+-fesvr-mk                = -j$(NR_CORES)
+-isa-sim-mk              = -j$(NR_CORES)
+ gnu-toolchain-libc-mk   = linux -j$(NR_CORES)
+ pk-mk                  = -j$(NR_CORES)
+ tests-mk               = -j$(NR_CORES)
+@@ -37,7 +33,7 @@ $(RISCV)/bin/riscv64-unknown-elf-gcc: gnu-toolchain-newlib
+ gnu-toolchain-newlib: install-dir
+    mkdir -p riscv-gnu-toolchain/build
+    cd riscv-gnu-toolchain/build;\
+-        ../configure --prefix=$(RISCV);\
++        ../configure --with-arch=rv64imafd --prefix=$(RISCV);\
+         cd $(ROOT)
+ 
+ $(RISCV)/bin/riscv64-unknown-linux-gnu-gcc: gnu-toolchain-no-multilib
+@@ -50,23 +46,7 @@ gnu-toolchain-libc: $(RISCV)/bin/riscv64-unknown-linux-gnu-gcc
+ gnu-toolchain-no-multilib: install-dir
+    mkdir -p riscv-gnu-toolchain/build
+    cd riscv-gnu-toolchain/build;\
+-   ../configure $(gnu-toolchain-co-fast);\
+-   cd $(ROOT)
+-
+-fesvr: install-dir $(RISCV)/bin/riscv64-unknown-linux-gnu-gcc
+-   mkdir -p riscv-fesvr/build
+-   cd riscv-fesvr/build;\
+-   ../configure $(fesvr-co);\
+-   make $(fesvr-mk);\
+-   make install;\
+-   cd $(ROOT)
+-
+-isa-sim: install-dir $(RISCV)/bin/riscv64-unknown-linux-gnu-gcc fesvr
+-   mkdir -p riscv-isa-sim/build
+-   cd riscv-isa-sim/build;\
+-   ../configure $(isa-sim-co);\
+-   make $(isa-sim-mk);\
+-   make install;\
++   ../configure --with-arch=rv64imafd $(gnu-toolchain-co-fast);\
+    cd $(ROOT)
+ 
+ tests: install-dir $(RISCV)/bin/riscv64-unknown-elf-gcc
+@@ -86,7 +66,7 @@ pk: install-dir $(RISCV)/bin/riscv64-unknown-linux-gnu-gcc
+    make install;\
+    cd $(ROOT)
+ 
+-all: gnu-toolchain-libc fesvr isa-sim tests pk
++all: gnu-toolchain-libc tests pk
+ 
+ # benchmark for the cache subsystem
+ cachetest:
+@@ -121,7 +101,7 @@ bbl.bin: bbl
+    riscv64-unknown-elf-objcopy -S -O binary --change-addresses -0x80000000 $< $@
+ 
+ clean-all: clean
+-   rm -rf riscv-fesvr/build riscv-isa-sim/build riscv-gnu-toolchain/build riscv-tests/build riscv-pk/build
++   rm -rf riscv-gnu-toolchain/build riscv-tests/build riscv-pk/build
+ 
+ .PHONY: cachetest rootfs/tetris
+ 
+@@ -130,7 +110,7 @@ help:
+    @echo ""
+    @echo "install [tool] to \$$RISCV with compiler <flag>'s"
+    @echo "    where tool can be any one of:"
+-   @echo "        fesvr isa-sim gnu-toolchain tests pk"
++   @echo "        gnu-toolchain tests pk"
+    @echo ""
+    @echo "build linux images for ariane"
+    @echo "    build vmlinux with"
+diff --git a/configs/buildroot_defconfig b/configs/buildroot_defconfig
+index 5887223..b202c13 100644
+--- a/configs/buildroot_defconfig
++++ b/configs/buildroot_defconfig
+@@ -3,7 +3,7 @@ BR2_riscv_custom=y
+ BR2_RISCV_ISA_CUSTOM_RVM=y
+ BR2_RISCV_ISA_CUSTOM_RVF=y
+ BR2_RISCV_ISA_CUSTOM_RVD=y
+-BR2_RISCV_ISA_CUSTOM_RVC=y
++BR2_RISCV_ISA_CUSTOM_RVC=n
+ BR2_RISCV_ABI_LP64D=y
+ BR2_CCACHE=y
+ BR2_TOOLCHAIN_EXTERNAL=y

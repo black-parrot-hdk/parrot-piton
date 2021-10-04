@@ -1,0 +1,15 @@
+[submodule "cva6-sdk"]
+	path = cva6-sdk
+	url = https://github.com/openhwgroup/cva6-sdk.git
+[submodule "openpiton"]
+	path = openpiton
+	url = https://github.com/sripathi-muralitharan/openpiton.git
+[submodule "piton-linux"]
+	path = piton-linux
+	url = https://github.com/PrincetonUniversity/piton-linux.git
+[submodule "opensbi"]
+	path = opensbi
+	url = https://github.com/Jbalkind/opensbi.git
+[submodule "sdk"]
+	path = sdk
+	url = https://github.com/black-parrot-sdk/black-parrot-sdk

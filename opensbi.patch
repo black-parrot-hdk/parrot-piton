@@ -1,0 +1,30 @@
+diff --git a/lib/sbi/emulation.c b/lib/sbi/emulation.c
+index 063ad58..a367b88 100644
+--- a/lib/sbi/emulation.c
++++ b/lib/sbi/emulation.c
+@@ -26,7 +26,7 @@ static uint64_t (*mul_jt[8])(uint64_t, uint64_t) =
+ 
+ int decode_illegal(uint64_t insn, struct sbi_trap_regs *regs) 
+ {
+-  uint8_t rs3 = RS3(insn);
++  //uint8_t rs3 = RS3(insn);
+   uint8_t rs2 = RS2(insn);
+   uint8_t rs1 = RS1(insn);
+   uint8_t funct3 = FUNCT3(insn);
+diff --git a/platform/fpga/openpiton/platform.c b/platform/fpga/openpiton/platform.c
+index 095004d..b96f9ce 100644
+--- a/platform/fpga/openpiton/platform.c
++++ b/platform/fpga/openpiton/platform.c
+@@ -21,10 +21,10 @@
+ #define OPENPITON_DEFAULT_UART_BAUDRATE		115200
+ #define OPENPITON_DEFAULT_UART_REG_SHIFT	0
+ #define OPENPITON_DEFAULT_UART_REG_WIDTH	1
+-#define OPENPITON_DEFAULT_PLIC_ADDR		0xfff1100000
++#define OPENPITON_DEFAULT_PLIC_ADDR		    0x0000300000
+ #define OPENPITON_DEFAULT_PLIC_NUM_SOURCES	2
+ #define OPENPITON_DEFAULT_HART_COUNT		3
+-#define OPENPITON_DEFAULT_CLINT_ADDR		0xfff1020000
++#define OPENPITON_DEFAULT_CLINT_ADDR		0x0000400000
+ 
+ static struct platform_uart_data uart = {
+ 	OPENPITON_DEFAULT_UART_ADDR,
